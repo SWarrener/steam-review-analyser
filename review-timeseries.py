@@ -23,7 +23,7 @@ if "time_series" not in df.columns.to_list():
         })
 
 try:
-    relevant_df= pd.read_csv("time_data.csv")
+    relevant_df= pd.read_json("time_data.json")
 except FileNotFoundError:
     relevant_df = df.loc[df["total_reviews"] >= 10]
     relevant_df = relevant_df.reindex()
@@ -35,7 +35,7 @@ except FileNotFoundError:
     last_id = 0
 
 for i in relevant_df.index:
-    if "Unkown" not in relevant_df["time_series"].tolist():
+    if "Unknown" not in relevant_df["time_series"].tolist():
         break
     if i < last_id:
         continue
@@ -47,12 +47,12 @@ for i in relevant_df.index:
     relevant_df.at[i,"time_series"] = data["rollups"]
     
     if i % 200 == 0:
-        relevant_df.to_csv("time_data.csv", index=False)
+        relevant_df.to_json("time_data.json", index=False)
         with open("timelastidx.txt", "w", encoding="utf-8-sig") as f:
             f.write(str(i))
         print(f"Reached index {i}")
 
-relevant_df.to_csv("time_data.csv", index=False)
+relevant_df.to_json("time_data.json", index=False)
 
 # For some newer games the time series isn't in months, will have to transform the data to deal with that
 # In many games the time series skips over some months, I assume these are all zero, so will just fill them. 
