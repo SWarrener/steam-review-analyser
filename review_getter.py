@@ -58,7 +58,7 @@ for i in df.index:
 
 # Find the index which marks the change between DLC and games, add an
 # identifier in a new column.
-if "Type" not in df.columns.to_list():
+if "type" not in df.columns.to_list():
     prev_id = 0
     for i in df.index:
         cur_id = df.at[i,"appid"]
@@ -67,7 +67,7 @@ if "Type" not in df.columns.to_list():
             break
         prev_id = cur_id
 
-    df.loc[df.index < change_idx, "Type"] = "DLC"
-    df.loc[df.index >= change_idx, "Type"] = "Game"
+    df.loc[df.index < change_idx, "type"] = "DLC"
+    df.loc[df.index >= change_idx, "type"] = "Game"
 
 df.to_csv("data.csv", index=False)

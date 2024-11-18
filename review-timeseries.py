@@ -17,7 +17,7 @@ if "time_series" not in df.columns.to_list():
         "negative_reviews": "int",
         "review_desc": "str",
         "review_score": "int",
-        "Type": "str",
+        "type": "str",
         "release_month": "int",
         "time_series": "object"
         })
