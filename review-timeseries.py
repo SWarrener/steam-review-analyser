@@ -5,9 +5,9 @@ import pandas as pd
 df = pd.read_csv("data.csv")
 
 if "time_series" not in df.columns.to_list():
-    time_columns = ["release_month", "time_series"]
+    time_columns = ["review_start", "time_series"]
     df = df.reindex(df.columns.to_list() + time_columns, axis=1)
-    df["release_month"] = df["release_month"].fillna(0)
+    df["review_start"] = df["review_start"].fillna(0)
     df["time_series"] = df["time_series"].fillna("Unknown")
     df = df.astype(dtype={
         "appid":"str",
@@ -18,7 +18,7 @@ if "time_series" not in df.columns.to_list():
         "review_desc": "str",
         "review_score": "int",
         "type": "str",
-        "release_month": "int",
+        "review_start": "int",
         "time_series": "object"
         })
 
@@ -43,7 +43,7 @@ for i in relevant_df.index:
     req = requests.get(f"https://store.steampowered.com/appreviewhistogram/{appid}?l=all", timeout=5)
     req.encoding = "utf-8"
     data = json.loads(req.text)["results"]
-    relevant_df.at[i,"release_month"] = int(data["start_date"])
+    relevant_df.at[i,"review_start"] = int(data["start_date"])
     relevant_df.at[i,"time_series"] = data["rollups"]
     
     if i % 200 == 0:
