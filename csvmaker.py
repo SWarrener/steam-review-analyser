@@ -11,7 +11,7 @@ def get_data(app_list: list, filename: str, filecount: int):
 
 
 apps = get_data([], "DLCdata", 5)
-apps = get_data(apps, "gamedata", 11)
+apps = get_data(apps, "gamedata", 12)
 
 df = pd.DataFrame(data=apps, columns=["appid", "name"])
 
