@@ -61,7 +61,7 @@ for i in df.index:
 if "type" not in df.columns.to_list():
     prev_id = 0
     for i in df.index:
-        cur_id = df.at[i,"appid"]
+        cur_id = int(df.at[i,"appid"])
         if cur_id < prev_id:
             change_idx = i
             break
