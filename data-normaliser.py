@@ -79,6 +79,14 @@ def normalise_month_data(data):
             new_data.append(MonthlyRecommends(month, 0, 0))
     return sorted(new_data)
 
+
+def normalise_review_start_data(date: int):
+    if date not in MONTHS:
+        date = max(month for month in MONTHS if month < date)
+    return date
+
+
 df["time_series"] = df["time_series"].apply(normalise_month_data)
+df["review_start"] = df["review_start"].apply(normalise_review_start_data)
 
 df.to_csv("normalised_data.csv", index=False)
