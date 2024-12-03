@@ -126,9 +126,30 @@ def plot_review_histogram(df, range_):
            ylabel="Cumulative Probability (% of games with a score lower than x)",
            title="CDF of positive review percentages of steam games")
 
-#time_df = import_data()
 
-simple_df = pd.read_csv("data.csv")
+def create_review_score_over_time(df: pd.DataFrame):
+    df = df.loc[df["total_reviews"] >= 1000]
+    deltas = {x: [] for x in range(145)}
+    for i in df.index:
+        series = [x for x in df.at[i, "time_series"] if int(x.get_date()) >= df.at[i, "review_start"]]
+        for idx, month in enumerate(series):
+            if idx > 144: #12 years, to avoid the last values being skewed by the small sample size of older games
+                break
+            score = month.get_score()
+            if score:
+                deltas[idx].append(score)
+    return [sum(v)/len(v) for v in deltas.values()]
+
+
+def plot_review_score_over_time(df: pd.DataFrame):
+    data = create_review_score_over_time(df)
+    ax.plot(data, "b--")
+    ax.set(xlabel="Months Since release", ylabel="Average Review score (monthly)",
+        title="Avg Steam review score by number of months since release. Games with over 1000 reviews")
+
+time_df = import_data()
+
+#simple_df = pd.read_csv("data.csv")
 
 #df["positive_reviews"] = df["time_series"].apply(true_pos)
 #df["total_reviews"] = df["time_series"].apply(true_total)
@@ -147,8 +168,10 @@ fig, ax = plt.subplots()
 #plot_game_time_data(time_df, (1000, 10000), colour="g", style="x--")
 #plot_game_time_data(time_df, (10000, 10000000), colour="y", style="x--")
 
-plot_review_histogram(simple_df, (10, 1000))
-plot_review_histogram(simple_df, (1000, 10000000))
+#plot_review_histogram(simple_df, (10, 1000))
+#plot_review_histogram(simple_df, (1000, 10000000))
+
+plot_review_score_over_time(time_df)
 
 ax.legend()
 plt.show()

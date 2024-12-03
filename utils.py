@@ -5,7 +5,7 @@ string_dates = [f"{year}-{pre_zero(x)}-01T00:00:00Z" for year in range(2011,dt.d
                 for x in range(1,13)] # Add the full years
 string_dates += [f"2010-{pre_zero(x)}-01T00:00:00Z" for x in range(10,13)] # Add end of 2010
 string_dates += [f"{dt.date.today().year}-{pre_zero(x)}-01T00:00:00Z" # Add the months of this year
-                 for x in range(1,dt.date.today().month+1)] # including the current one
+                 for x in range(1,dt.date.today().month)] # including the current one TODO (add +1 back in when sharing code)
 
 MONTHS = sorted([int(dt.datetime.fromisoformat(date).timestamp()) for date in string_dates])
 
@@ -18,6 +18,7 @@ class MonthlyRecommends:
             self.date = str(max(month for month in MONTHS if month < int(date)))
         self.up = up
         self.down = down
+        self.total = up + down
         self.year = dt.datetime.fromtimestamp(int(self.date),tz=dt.UTC).year
         self.month = dt.datetime.fromtimestamp(int(self.date),tz=dt.UTC).month
 
@@ -47,3 +48,8 @@ class MonthlyRecommends:
 
     def get_month(self):
         return self.month
+
+    def get_score(self):
+        if self.total > 0:
+            return (self.up / self.total) * 100
+        return None
