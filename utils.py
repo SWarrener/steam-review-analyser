@@ -10,7 +10,13 @@ string_dates += [f"{dt.date.today().year}-{pre_zero(x)}-01T00:00:00Z" # Add the 
 MONTHS = sorted([int(dt.datetime.fromisoformat(date).timestamp()) for date in string_dates])
 
 class MonthlyRecommends:
+    '''
+    MonthlyRecommends(date: str, up: int, down: int)
 
+    A class representing the review data for each month.
+    Contains a str representing the unix timestamp and ints for the number
+    of positive and the number of negative reviews
+    '''
     def __init__(self, date: str, up: int, down: int):
         if int(date) in MONTHS:
             self.date = str(date)
@@ -41,15 +47,41 @@ class MonthlyRecommends:
         return f"{self.date}: UP {self.up} DOWN {self.down}"
 
     def get_date(self):
+        '''
+        Gets the date in the form of a unix timestamp str for midnight on the first
+        day of the month
+
+        Returns:
+        str
+        '''
         return self.date
 
     def get_year(self):
+        '''
+        Gets the year which the review data is from.
+
+        Returns:
+        int
+        '''
         return self.year
 
     def get_month(self):
+        '''
+        Gets the month which the review data is from.
+
+        Returns:
+        int between 1 and 12
+        '''
         return self.month
 
     def get_score(self):
+        '''
+        Calculates and returns the review score for the month. The score is the percentage
+        of reviews which are positive
+
+        Returns:
+        int if total reviews > 0 else None 
+        '''
         if self.total > 0:
             return (self.up / self.total) * 100
         return None

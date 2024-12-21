@@ -147,10 +147,24 @@ def plot_review_score_over_time(df: pd.DataFrame):
     ax.set(xlabel="Months Since release", ylabel="Average Review score (monthly)",
         title="Avg Steam review score by number of months since release. Games with over 1000 reviews")
 
-time_df = import_data()
 
-#simple_df = pd.read_csv("data.csv")
+def review_count_percentiles(df: pd.DataFrame):
+    total = sum(df["total_reviews"])
+    df = df.sort_values(by=["total_reviews"], ascending=False)
+    for j in (0.1*x for x in range(1,10)):
+        counter = 0
+        for i, num in enumerate(df["total_reviews"]):
+            counter += num
+            if counter > total*j:
+                print(f"{round(j*100)}% of reviews are for {i+1} games ({round((i+1)/len(df.index)*100,3)}% of all games)")
+                break
 
+#time_df = import_data()
+
+simple_df = pd.read_csv("data.csv")
+
+# Replaces the total and positive review counts with the ones summed from the histograms, 
+# removing any review from a non-steam purchase.
 #df["positive_reviews"] = df["time_series"].apply(true_pos)
 #df["total_reviews"] = df["time_series"].apply(true_total)
 
@@ -163,15 +177,27 @@ fig, ax = plt.subplots()
 #plot_review_count_graph(simple_df, colour = "r", style="x", type_ = "Game",  x_off=5, y_off=0)
 #plot_review_count_graph(simple_df, colour = "g", style="x", type_ = "DLC", y_off=5)
 
+# Graphs for game review score by release date
 #plot_game_time_data(time_df, (10, 1000)) # total_reviews >= 10
 #plot_game_time_data(time_df, (100, 1000), colour="r", style="x--")
 #plot_game_time_data(time_df, (1000, 10000), colour="g", style="x--")
 #plot_game_time_data(time_df, (10000, 10000000), colour="y", style="x--")
 
+# Histogram of review scores
 #plot_review_histogram(simple_df, (10, 1000))
 #plot_review_histogram(simple_df, (1000, 10000000))
 
-plot_review_score_over_time(time_df)
+# Monthly review score by months since release date
+#plot_review_score_over_time(time_df)
 
-ax.legend()
-plt.show()
+# Number of games by percentile of reviews
+# review_count_percentiles(simple_df)
+
+# Other ideas:
+    # Review score across all games by month of review being made.
+    # Some more complex stat stuff?
+    # Tidy everything up and add some doc strings.
+    # Make a github pages showing everything in a neat fashion.
+
+#ax.legend()
+#plt.show()

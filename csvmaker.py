@@ -10,8 +10,8 @@ def get_data(app_list: list, filename: str, filecount: int):
     return app_list
 
 
-apps = get_data([], "DLCdata", 5)
-apps = get_data(apps, "gamedata", 12)
+apps = get_data([], "DLCdata", 5) # Change the last number in these two functions to
+apps = get_data(apps, "gamedata", 12) # How many files of each type you have
 
 df = pd.DataFrame(data=apps, columns=["appid", "name"])
 
