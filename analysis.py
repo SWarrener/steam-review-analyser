@@ -85,12 +85,11 @@ def create_game_time_data(df, type_ = "All"):
 
 def plot_game_time_data(df, counts, type_ = "All", colour = "b", style = "o--"):
     df = df.loc[(df["total_reviews"] >= counts[0]) & (df["total_reviews"] < counts[1])]
-    number = len(df.index)
     data = create_game_time_data(df, type_ = type_)
     dates = np.arange(np.datetime64('2010-10'), np.datetime64('2024-12'),
                   np.timedelta64(1, 'M'))
     scores = [x[1] for x in data]
-    ax.plot(range(len(dates)), scores, colour+style, label=f"Games with between {counts[0]} and {counts[1]-1} reviews. ({number} Games)")
+    ax.plot(range(len(dates)), scores, colour+style, label=f"Games with between {counts[0]} and {counts[1]-1} reviews. ({len(df.index)} Games)")
     ax.set(xlabel="Steam Release Month", ylabel="Mean review score (% reviews positive for each game)",
         title="Avg Steam review score by release month")
     while np.nan in scores: # Messy, but only affects 2 out of ~180 values so no real impact
@@ -159,11 +158,41 @@ def review_count_percentiles(df: pd.DataFrame):
                 print(f"{round(j*100)}% of reviews are for {i+1} games ({round((i+1)/len(df.index)*100,3)}% of all games)")
                 break
 
-#time_df = import_data()
 
-simple_df = pd.read_csv("data.csv")
+def create_all_reviews_by_month_data(df: pd.DataFrame):
+    result = []
+    series = df["time_series"]
+    for i in range(len(MONTHS)):
+        total, pos = 0, 0
+        for x in series:
+            month = x[i]
+            total += month.total
+            pos += month.up
+        result.append((pos/total)*100)
+    return result
 
-# Replaces the total and positive review counts with the ones summed from the histograms, 
+
+def plot_all_reviews_by_month(df: pd.DataFrame, colour = "b", style = "o--"):
+    df["total_reviews"] = df["time_series"].apply(true_total)
+    df = df.loc[df["total_reviews"] >= 0]
+    scores = create_all_reviews_by_month_data(df)
+    dates = np.arange(np.datetime64('2010-10'), np.datetime64('2024-12'),
+                  np.timedelta64(1, 'M'))
+    ax.plot(range(len(dates)), scores, colour+style, label=f"{len(df.index)} Games")
+    ax.set(xlabel="Month", ylabel="Review score (% reviews positive)",
+        title="Steam review score by month of review")
+    coeff = np.polyfit(range(len(dates)), scores, 2)
+    ax.plot(range(len(dates)), np.polyval(coeff, range(len(dates))), colour)
+    ax.xaxis.set_ticks(range(len(dates)))
+    ax.xaxis.set_ticklabels(dates)
+    ax.xaxis.set_major_locator(tkr.MultipleLocator(6))
+    ax.xaxis.set_minor_locator(tkr.MultipleLocator(1))
+
+time_df = import_data()
+
+#simple_df = pd.read_csv("data.csv")
+
+# Replaces the total and positive review counts with the ones summed from the histograms,
 # removing any review from a non-steam purchase.
 #df["positive_reviews"] = df["time_series"].apply(true_pos)
 #df["total_reviews"] = df["time_series"].apply(true_total)
@@ -193,11 +222,13 @@ fig, ax = plt.subplots()
 # Number of games by percentile of reviews
 # review_count_percentiles(simple_df)
 
+# Review score across all games by month of review being made.
+plot_all_reviews_by_month(time_df)
+
 # Other ideas:
-    # Review score across all games by month of review being made.
     # Some more complex stat stuff?
     # Tidy everything up and add some doc strings.
     # Make a github pages showing everything in a neat fashion.
 
-#ax.legend()
-#plt.show()
+ax.legend()
+plt.show()

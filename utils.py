@@ -7,7 +7,7 @@ string_dates += [f"2010-{pre_zero(x)}-01T00:00:00Z" for x in range(10,13)] # Add
 string_dates += [f"{dt.date.today().year}-{pre_zero(x)}-01T00:00:00Z" # Add the months of this year
                  for x in range(1,dt.date.today().month)] # including the current one TODO (add +1 back in when sharing code)
 
-MONTHS = sorted([int(dt.datetime.fromisoformat(date).timestamp()) for date in string_dates])
+MONTHS = sorted([int(dt.datetime.fromisoformat(date).timestamp()) for date in string_dates][:-1]) # (Remove the -1 when sharing)
 
 class MonthlyRecommends:
     '''
