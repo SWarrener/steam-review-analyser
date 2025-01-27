@@ -20,7 +20,7 @@ tz = dt.UTC
 # Weeks are done with the week starting on the day of the week of the game's release, identified
 # by midnight UTC for that day.
 
-
+# Checks to see if the data is in weekly mode or monthly mode
 def check_weekly(data):
     timestamps = [dt.datetime.fromtimestamp(int(x["date"]),tz=tz) for x in data]
     deltas = [timestamps[n] - timestamps[n-1] for n in range(1,len(data))]
@@ -28,7 +28,7 @@ def check_weekly(data):
         return True
     return False
 
-
+# Moves the weekly data into monthly data, returning one or two months as necessary
 def move_weekly_data(data):
     date = data["date"]
     up, down = int(data["recommendations_up"]), int(data["recommendations_down"])

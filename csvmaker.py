@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 
-
+# Turns the data from the various json files into one big csv
 def get_data(app_list: list, filename: str, filecount: int):
     for i in range(filecount):
         with open(f"{filename}{i}.json", "r", encoding="utf-8") as f:

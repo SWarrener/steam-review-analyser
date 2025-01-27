@@ -33,6 +33,7 @@ params = { # The mixed types is intentional, Valve do it this way
     "filter_offtopic_activity": 0
 }
 
+# Go through the df line by line getting the review data.
 for i in df.index:
     if "Unknown" not in df["review_desc"].tolist():
         break
@@ -50,7 +51,7 @@ for i in df.index:
         "review_score": data["review_score"]
     }
 
-    if i % 200 == 0:
+    if i % 200 == 0: # Save every 200 games
         df.to_csv("data.csv", index=False)
         with open("lastidx.txt", "w", encoding="utf-8-sig") as f:
             f.write(str(i))

@@ -4,6 +4,7 @@ import pandas as pd
 
 df = pd.read_csv("data.csv")
 
+# Add new columns to the database if we don't have them.
 if "time_series" not in df.columns.to_list():
     time_columns = ["review_start", "time_series"]
     df = df.reindex(df.columns.to_list() + time_columns, axis=1)
@@ -34,6 +35,7 @@ try:
 except FileNotFoundError:
     last_id = 0
 
+# Go through the df line by line getting the review data.
 for i in relevant_df.index:
     if "Unknown" not in relevant_df["time_series"].tolist():
         break
@@ -46,7 +48,7 @@ for i in relevant_df.index:
     relevant_df.at[i,"review_start"] = int(data["start_date"])
     relevant_df.at[i,"time_series"] = data["rollups"]
     
-    if i % 200 == 0:
+    if i % 200 == 0: # Save every 200 games
         relevant_df.to_json("time_data.json", index=False)
         with open("timelastidx.txt", "w", encoding="utf-8-sig") as f:
             f.write(str(i))
